@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/inner_nav_graph"
+    app:startDestination="@id/welcomeTrainerFragment">
+    <fragment
+        android:id="@+id/welcomeTrainerFragment"
+        android:name="com.alexrojasb.idpokemon.fragments.WelcomeTrainerFragment"
+        android:label="fragment_trainer_welcome"
+        tools:layout="@layout/fragment_trainer_welcome" >
+        <action
+            android:id="@+id/action_welcomeTrainerFragment_to_mainFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/inner_nav_graph"
+            app:popUpToInclusive="false"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.alexrojasb.idpokemon.fragments.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" />
+</navigation>
