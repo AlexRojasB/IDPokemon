@@ -19,7 +19,7 @@ class PokemonListAdapter(val onItemClicked: ((Pokemon) -> (Unit))? = null) : Rec
         private var pokemonNameTextView: TextView = itemView.findViewById(R.id.pokemonName)
 
         fun bind(model: Pokemon) {
-            pokemonNameTextView.text = model.pokemonName
+            pokemonNameTextView.text = model.name
             itemView.setOnClickListener { onItemClicked?.invoke(model) }
         }
     }

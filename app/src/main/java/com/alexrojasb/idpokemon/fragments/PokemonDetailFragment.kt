@@ -14,6 +14,6 @@ class PokemonDetailFragment : Fragment(R.layout.fragment_detail_pokemon) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pokemonNameTextView = view.findViewById(R.id.pokemonDetailName)
-        pokemonNameTextView.text = args.pokemon.pokemonName
+        pokemonNameTextView.text = args.pokemon.name
     }
 }
