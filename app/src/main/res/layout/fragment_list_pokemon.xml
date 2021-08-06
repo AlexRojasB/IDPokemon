@@ -7,18 +7,17 @@
     tools:context=".fragments.PokemonListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="10dp"
         android:id="@+id/pokemonRecycleView"
-        android:layout_width="409dp"
-        android:layout_height="665dp"
-        android:layout_marginBottom="2dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_pokemon_cell"
         app:layout_constraintBottom_toTopOf="@+id/exploreBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:itemCount="10"
-        tools:listitem="@layout/item_pokemon_cell" />
-
+        app:layout_constraintTop_toTopOf="parent" />
     <Button
         android:id="@+id/exploreBtn"
         android:layout_width="wrap_content"
@@ -38,4 +37,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

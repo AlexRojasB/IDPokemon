@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -23,12 +25,22 @@ import kotlin.collections.ArrayList
 class MainFragment : Fragment() {
     private lateinit var homepagerPageChanged: ViewPager2.OnPageChangeCallback
     private lateinit var homePager: ViewPager2
-
+    private val backStack = Stack<Int>()
+private val fragments = listOf<BaseFragment>(
+    BaseFragment.newInstance(R.layout.content_pokemon_list_base, R.id.toolbar_home, R.id.nav_graph),
+    BaseFragment.newInstance(R.layout.content_favorite_base, R.id.toolbar_favorite, R.id.favorite_nav_graph)
+    )
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val calback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+
+            }
+        }
+       requireActivity().onBackPressedDispatcher.addCallback(calback)
         return inflater.inflate(R.layout.fragment_main, container, false)
     }
 
@@ -38,10 +50,11 @@ class MainFragment : Fragment() {
         val innerBottomNavigationView = view.findViewById<BottomNavigationView>(R.id.innerBottomNavigationView)
         val navController = navHostFragment.navController
         innerBottomNavigationView.setupWithNavController(navController)*/
-        val homeAdapter = HomePagerAdapter(initFragments(), this )
+        val homeAdapter = HomePagerAdapter(fragments, this )
         homePager = view.findViewById<ViewPager2>(R.id.homePager)
         val innerBottomNavigationView = view.findViewById<BottomNavigationView>(R.id.innerBottomNavigationView)
         homePager.adapter = homeAdapter
+        homePager.offscreenPageLimit = fragments.size
         innerBottomNavigationView.setOnNavigationItemSelectedListener {
             when(it.itemId) {
                 R.id.pokemonListFragment -> {
@@ -64,12 +77,6 @@ class MainFragment : Fragment() {
 
     }
 
-    private  fun initFragments(): ArrayList<Fragment> {
-        return arrayListOf(
-            BaseFragment.newInstance(R.layout.content_pokemon_list_base, R.id.toolbar_home, R.id.nav_graph),
-            BaseFragment.newInstance(R.layout.content_favorite_base, R.id.toolbar_favorite, R.id.favorite_nav_graph),
-        )
-    }
 
     override fun onDestroy() {
         homePager.unregisterOnPageChangeCallback(homepagerPageChanged)
