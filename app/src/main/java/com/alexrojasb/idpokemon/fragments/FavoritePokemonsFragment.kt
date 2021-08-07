@@ -39,9 +39,6 @@ class FavoritePokemonsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.favoriteRecycleView.adapter = adapter
-        viewModel.getAllPokemonsByName("").observe(viewLifecycleOwner) {
-
-        }
     }
 
     override fun onDestroy() {

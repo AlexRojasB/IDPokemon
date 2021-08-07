@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import androidx.recyclerview.widget.RecyclerView
 import com.alexrojasb.idpokemon.R
 import com.alexrojasb.idpokemon.adapters.PokemonListAdapter
+import com.alexrojasb.idpokemon.databinding.FragmentListPokemonBinding
+import com.alexrojasb.idpokemon.databinding.FragmentPokemonsFavoriteBinding
 import com.alexrojasb.idpokemon.models.Pokemon
 import com.alexrojasb.idpokemon.viewModels.PokemonListViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -24,14 +26,20 @@ import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 class PokemonListFragment : Fragment() {
+    private var _binding: FragmentListPokemonBinding? = null
+    private val binding get () = _binding!!
     private lateinit var viewModel: PokemonListViewModel
-    private lateinit var  pokemonRecyclerView: RecyclerView
-    private lateinit var pokemonImage: ImageView
-    private lateinit var explore: Button
     private val disposable = CompositeDisposable()
-    private lateinit var  progressBar: ProgressBar
 
     private  val adapter = PokemonListAdapter { pokemon ->
+      if (pokemon.id == null) {
+          viewModel.fetchOnePokemon(pokemon.name)
+      } else {
+          navigateToDetails(pokemon)
+      }
+    }
+
+    private fun navigateToDetails(pokemon: Pokemon) {
         val action =
             PokemonListFragmentDirections.actionPokemonListFragmentToPokemonDetailFragment(pokemon)
         findNavController().navigate(action)
@@ -48,54 +56,50 @@ class PokemonListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_list_pokemon, container, false)
+        _binding = FragmentListPokemonBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        explore = view.findViewById(R.id.exploreBtn)
-        pokemonRecyclerView = view.findViewById(R.id.pokemonRecycleView)
-        progressBar = view.findViewById(R.id.progressBar)
 
-        pokemonRecyclerView.adapter = adapter
-        pokemonRecyclerView.addItemDecoration(DividerItemDecoration(requireContext(), VERTICAL))
+        binding.pokemonRecycleView.adapter = adapter
+        binding.pokemonRecycleView.addItemDecoration(DividerItemDecoration(requireContext(), VERTICAL))
         viewModel.pokemonList.observe(viewLifecycleOwner) {
-
             adapter.pokemonList = it
-         //   Picasso.get()
-           //     .load("")
-             //   .into(pokemonImage)
         }
         viewModel.isLoading.observe(viewLifecycleOwner) {
-            progressBar.visibility = if (it) View.VISIBLE else View.GONE
+            binding.progressBar.visibility = if (it) View.VISIBLE else View.GONE
         }
 
         viewModel.serverError.observe(viewLifecycleOwner) {
             if (it) {
-                Snackbar.make(view, "Secreto de amor, de un gran amor", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(view, "Something was wrong", Snackbar.LENGTH_LONG).show()
             }
         }
 
+        viewModel.pokemonUpdateDetails.observe(viewLifecycleOwner) {
+            navigateToDetails(it)
+        }
+
         disposable.add(
-            explore.clicks()
+            binding.exploreBtn.clicks()
                 .subscribe{
                   viewModel.fetchPokemonList()
                 }
         )
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val destination = when (item?.itemId) {
-            R.id.favoritePokemonsFragment -> R.id.favoritePokemonsFragment
-            else -> null
-        }
-
-        return if (destination != null) findNavController().navigate(destination).let { true }
-        else super.onOptionsItemSelected(item)
+        disposable.add(
+            binding.randomCatchBtn.clicks()
+                .subscribe {
+                    viewModel.fetchOneRandomPokemon()
+                }
+        )
     }
 
     override fun onDestroy() {
         disposable.clear()
+        _binding = null
         super.onDestroy()
     }
+
 }

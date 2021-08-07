@@ -18,8 +18,8 @@ class FavoriteViewModel(application: Application) : AndroidViewModel(application
         pokemonRepository = PokemonRepository(db.pokemonDao())
     }
 
-    fun getAllPokemonsByName(name: String): LiveData<List<PokemonEntity>> {
-        return pokemonRepository.allPokemonsByName(name)
+    fun getAllPokemons(name: String): LiveData<List<PokemonEntity>> {
+        return pokemonRepository.allPokemons()
     }
 
     fun delete(pokemon: Pokemon) = viewModelScope.launch {

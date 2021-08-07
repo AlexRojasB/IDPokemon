@@ -28,18 +28,26 @@ class PokemonListViewModel(application: Application): AndroidViewModel(applicati
     private val _serverError = MutableLiveData<Boolean>()
     val serverError: LiveData<Boolean> = _serverError
 
+    private val _pokemonUpdateDetails = MutableLiveData<Pokemon>()
+    val pokemonUpdateDetails: LiveData<Pokemon> = _pokemonUpdateDetails
+
     init {
-        var db = PokemonContext.getDatabase(application)
-        pokemonRepository = PokemonRepository(db.pokemonDao())
+        //var db = PokemonContext.getDatabase(application)
+       // pokemonRepository = PokemonRepository(db.pokemonDao())
+
+        //localPokemon.addAll(pokemonRepository.allPokemons())
     }
 
-    fun insert(name: String) = viewModelScope.launch {
-        pokemonRepository.insert(PokemonEntity(name))
+    fun insert(pokemon: Pokemon) = viewModelScope.launch {
+        //pokemonRepository.insert(pokemon)
     }
 
-    fun fetchOnePokemon() {
+
+
+    fun fetchOneRandomPokemon() {
+        val rnds = (1..898).random()
         _isLoading.postValue(true)
-        retrofitProvider.getApiService().getPokemon("5")
+        retrofitProvider.getApiService().getPokemon(rnds.toString())
             .enqueue(object : Callback<Pokemon> {
                 override fun onResponse(call: Call<Pokemon>, response: Response<Pokemon>) {
                     if (response.isSuccessful) {
@@ -47,8 +55,14 @@ class PokemonListViewModel(application: Application): AndroidViewModel(applicati
                        var isInTheList = localPokemon.firstOrNull{ pokemon -> pokemon.name == poke!!.name}
                         if (isInTheList == null) {
                             localPokemon.add(poke!!)
-                        } else {
-                            isInTheList = poke
+                        } else if ( poke?.id != null) {
+                            isInTheList.id = poke?.id
+                            isInTheList.height = poke?.height
+                            isInTheList.weight = poke?.weight
+                            isInTheList.moves = poke?.moves
+                            isInTheList.types = poke?.types
+                            isInTheList.stats = poke?.stats
+                            isInTheList.sprites = poke?.sprites
                         }
                         _isLoading.postValue(false)
                         _serverError.postValue(false)
@@ -59,7 +73,29 @@ class PokemonListViewModel(application: Application): AndroidViewModel(applicati
                 }
 
                 override fun onFailure(call: Call<Pokemon>, t: Throwable) {
+                    _serverError.postValue(true)
+                }
+            })
+    }
 
+    fun fetchOnePokemon(name: String) {
+        _isLoading.postValue(true)
+        retrofitProvider.getApiService().getPokemon(name)
+            .enqueue(object : Callback<Pokemon> {
+                override fun onResponse(call: Call<Pokemon>, response: Response<Pokemon>) {
+                    if (response.isSuccessful) {
+                        val poke = response.body()!!
+
+                        _isLoading.postValue(false)
+                        _serverError.postValue(false)
+                        _pokemonUpdateDetails.postValue(poke)
+                    } else {
+                        _serverError.postValue(true)
+                    }
+                }
+
+                override fun onFailure(call: Call<Pokemon?>, t: Throwable) {
+                    _serverError.postValue(true)
                 }
             })
     }
@@ -73,7 +109,7 @@ class PokemonListViewModel(application: Application): AndroidViewModel(applicati
                     response: Response<PokeApiResult>
                 ) {
                     if (response.isSuccessful) {
-                        newPokemonOffset += 15
+                        newPokemonOffset += 10
                         val pokemonMapped = response.body()!!.results.map { poke -> Pokemon(name = poke.name) }
                         localPokemon.addAll(pokemonMapped)
                         _isLoading.postValue(false)
@@ -81,6 +117,7 @@ class PokemonListViewModel(application: Application): AndroidViewModel(applicati
                         _pokemonList.postValue(localPokemon)
                     } else {
                         _serverError.postValue(true)
+                        _isLoading.postValue(false)
                     }
                 }
 

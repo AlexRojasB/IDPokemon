@@ -7,7 +7,7 @@
     tools:context=".fragments.PokemonDetailFragment">
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/pokemonImage"
         android:layout_width="411dp"
         android:layout_height="234dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,20 +29,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/pokemonImage" />
 
-    <TextView
-        android:id="@+id/textView3"
+    <TableLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="16dp"
-        android:text="TextView"
-        android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.942"
         app:layout_constraintStart_toEndOf="@id/pokemonDetailName"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/pokemonImage">
+        <TableRow
+            android:id="@+id/typesRow">
+            <TextView android:text="Normal"
+                android:textSize="12dp"
+                android:layout_marginRight="5dp"/>
+        </TableRow>
+    </TableLayout>
 
     <TextView
         android:id="@+id/textView4"

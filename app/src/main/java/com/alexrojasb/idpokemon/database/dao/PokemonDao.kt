@@ -9,8 +9,8 @@ import com.alexrojasb.idpokemon.database.PokemonEntity
 
 @Dao
 interface PokemonDao {
-    @Query("Select * from pokemonentity where name=:name")
-    fun getAllPokemonsByName(name: String): LiveData<List<PokemonEntity>>
+    @Query("Select * from pokemonentity")
+    fun getAllPokemons(): LiveData<List<PokemonEntity>>
 
     @Insert
     suspend fun insertPokemon(pokemonEntity: PokemonEntity)

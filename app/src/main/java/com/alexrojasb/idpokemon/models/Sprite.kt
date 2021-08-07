@@ -4,4 +4,4 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Sprite (val backDefault: String, val frontDefault: String) : Parcelable
+data class Sprite (val back_default: String, val front_default: String) : Parcelable
