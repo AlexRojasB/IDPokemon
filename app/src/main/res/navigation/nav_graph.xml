@@ -22,8 +22,14 @@
         <argument
             android:name="pokemon"
             app:argType="com.alexrojasb.idpokemon.models.Pokemon" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoritePokemonsFragment"
+        android:name="com.alexrojasb.idpokemon.fragments.FavoritePokemonsFragment"
+        android:label="fragment_pokemons_favorite"
+        tools:layout="@layout/fragment_pokemons_favorite" >
         <action
-            android:id="@+id/action_pokemonDetailFragment_to_pokemonListFragment"
-            app:destination="@id/pokemonListFragment" />
+            android:id="@+id/action_favoritePokemonsFragment2_to_pokemonDetailFragment"
+            app:destination="@id/pokemonDetailFragment" />
     </fragment>
 </navigation>
